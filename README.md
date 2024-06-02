@@ -1,9 +1,9 @@
 In order for any of this to work, install Squib! https://squib.readthedocs.io/en/v0.18.0/install.html or in summary:
 
-    install Ruby with devkit
-    gem install squib
-    gem install game_icons
-    bundle install
+1) install Ruby with devkit
+2) execute `gem install squib` from an admin powershell prompt (takes forever)
+3) execute `gem install game_icons` from an admin powershell prompt
+4) execute `bundle install` from an admin powershell prompt (installs all of the stuff in the Genfile.lock file)
 
 guide doesn't spell this out, but after installing ruby (which does take forever) you should have a ruby command-line option in your start applications. that's where all the commands function
 
