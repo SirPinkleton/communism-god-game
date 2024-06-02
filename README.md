@@ -3,7 +3,7 @@ In order for any of this to work, install Squib! https://squib.readthedocs.io/en
 1) install Ruby with devkit
 2) execute `gem install squib` from an admin powershell prompt (takes forever)
 3) execute `gem install game_icons` from an admin powershell prompt
-4) execute `bundle install` from an admin powershell prompt (installs all of the stuff in the Genfile.lock file)
+4) execute `bundle install` from an admin powershell prompt (installs all of the stuff in the Genfile.lock file. An example of when this matters is I had to update references to glib2 3.4.4 to glib2 4.2.2 to resolve a compile error with this command)
 
 guide doesn't spell this out, but after installing ruby (which does take forever) you should have a ruby command-line option in your start applications. that's where all the commands function
 
