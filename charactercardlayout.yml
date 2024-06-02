@@ -1,0 +1,661 @@
+### Borders & Boundaries ###
+
+#width/height (and calculated x/y offsets) provided by template from BoardGameMaker.com, see poker-size.pdf
+#overall card size in manufacturing: width: 822, height: 1122 (2.74 x 3.74)
+  
+## Card Overall Dimensions
+  
+# box for cut line
+
+#822 - 750 = 72 ; 72 /2 = 36
+#if this is home printing, use 0
+#else, use 36
+fromLeftBleedToCut:
+  x: 36
+  
+#1122 - 1050 = 72 ; 72 / 2 = 36
+#if this is home printing, use 0
+#else, use 36
+fromTopBleedToCut:
+  y: 36
+  
+fromTopLeftBleedToCut:
+  extends:
+   - fromLeftBleedToCut
+   - fromTopBleedToCut
+   
+# The "cut area line", everything outside of this area guaranteed to be lost
+cut:
+  extends: fromTopLeftBleedToCut
+  width: 750
+  height: 1050
+  radius: 16
+  fill_color: '#000' #'#aaa'
+  stroke_color: '#000' #'#aaa'
+    
+# box for safe line
+
+#750 - 690 = 60
+fromLeftCutToSafe:
+  extends: fromLeftBleedToCut
+  x: += 30
+  
+#1050 - 990 = 60
+fromTopCutToSafe:
+  extends: fromTopBleedToCut
+  y: += 30
+
+fromTopLeftCutToSafe:
+  extends: 
+   - fromTopCutToSafe
+   - fromLeftCutToSafe
+   
+widthSafeArea:
+  width: 690
+  
+heightSafeArea:
+  height: 990
+  
+# the "safe area line", everything inside of this area guaranteed to be saved
+safe:
+  extends: 
+   - fromTopLeftCutToSafe
+   - widthSafeArea
+   - heightSafeArea
+  radius: 8
+  #dash: 3 3
+  fill_color: '#fff'
+
+topAbilityColorBox:
+  extends: 
+   - fromTopLeftCutToSafe
+   - widthSafeArea
+  #fill_color: '(0,0)(800,800) pumpkin@0.0white@1.0' #:CORAL_red
+  #stroke_color: '(0,0)(800,800) pumpkin@0.0white@1.0' #:CORAL_red
+  fill_color: :alice_blue
+  stroke_color: :alice_blue
+  height: 452
+  radius: 8
+  
+topAbilityColorBoxBorderCover:
+  extends: topAbilityColorBox
+  height: 50
+  y: += 402
+  radius: 0
+  
+bottomAbilityColorBox:
+  extends: 
+   - fromTopLeftCutToSafe
+   - widthSafeArea
+  #fill_color: '(0,0)(800,800) royal_green@0.0white@1.0' #:cyan_cornflower_blue
+  #stroke_color: '(0,0)(800,800) royal_green@0.0white@1.0' #:cyan_cornflower_blue
+  fill_color: :alice_blue
+  stroke_color: :alice_blue
+  #fill_color: '#ccc'
+  #stroke_color: '#ccc'
+  y: += 452
+  height: 433
+  
+
+passivesColorBox:
+  extends: 
+   - fromTopLeftCutToSafe
+   - widthSafeArea
+  #fill_color: '(0,0)(800,800) shandy@0.0white@1.0' #:wild_strawberry
+  #stroke_color: '(0,0)(800,800) shandy@0.0white@1.0' #:wild_strawberry
+  fill_color: :shandy
+  stroke_color: :shandy
+  #fill_color: '#ddd'
+  #stroke_color: '#ddd'
+  y: += 888
+  height: 50
+
+requirementsColorBox:
+  extends: 
+   - fromTopLeftCutToSafe
+   - widthSafeArea
+  #fill_color: '(0,0)(800,800) shandy@0.9white@1.0' #:water
+  #stroke_color: '(0,0)(800,800) shandy@0.9white@1.0' #:water
+  fill_color: :shandy
+  stroke_color: :shandy
+  #fill_color: '#eee'
+  #stroke_color: '#eee'
+  y: += 938
+  height: 51
+  radius: 8
+  
+requirementsColorBoxBorderCover:
+  extends: requirementsColorBox
+  height: 20
+  radius: 0
+
+# adding 20 pixel buffer from safe area line for clean look
+
+fromLeftSafeToMargin:
+  extends: fromLeftCutToSafe
+  x: += 20
+  
+fromTopSafeToMargin:
+  extends: fromTopCutToSafe
+  y: += 20
+
+fromTopLeftSafeToMargin:
+  extends:
+   - fromLeftSafeToMargin
+   - fromTopSafeToMargin
+
+## lines
+
+#just a horizontal line, to be placed within safe boundary and at various y co-ords
+horizontalLine:
+  extends: 
+   - fromLeftCutToSafe
+   - widthSafeArea
+  height: 1.5
+
+
+#line to separate the top ability from bottom ability
+#445 + 445 + 50 + 50 = 990
+topOfBottomAbility:
+  extends: fromTopSafeToMargin
+  y: += 432
+
+lineTopOfBottomAbility:
+  extends: 
+   - horizontalLine
+   - topOfBottomAbility
+  
+#line to separate out the passives from the bottom action above it
+#445 + 445 + 50 + 50 = 990
+lineTopOfPassives:
+  extends: lineTopOfBottomAbility
+  y: += 435
+
+#line to separate out the requirements from the passives above it
+#445 + 445 + 50 + 50 = 990
+lineTopOfRequirements:
+  extends: lineTopOfPassives
+  y: += 50
+
+#10 (margin) + 30 (text) + 10 = height of requirements = 50
+#10 + 30 + 10 = height of passives = 50
+#space for bottom stuff = 50 + 50 = 100
+#990-100 = 890
+#890 / 2 = 445
+
+verticalLine:
+  y: 66
+  width: 1.5
+  height: 918
+
+  
+### Text Specification ###
+# Need to specify the font size, x co-ords, width, height, and alignment of all the text
+
+## Top Ability Section
+
+# Bubbles
+
+bubble:
+  width: 150
+  height: 50
+  radius: 8
+  fill_color: :water
+  #fill_color: ':alice_blue'
+
+#target
+topTargetBubble:
+  extends: 
+   - fromTopLeftSafeToMargin
+   - bubble
+   
+icon:
+  extends: iconsWidthHeight
+
+topTargetIcon:
+  extends: 
+   - topTargetBubble
+   - icon
+  y: -= 15
+  X: -= 15
+
+topTarget:
+  extends: topTargetBubble
+  y: += 10
+  align: center
+  font: 'Garamond 7.5'
+  
+#range
+topRangeBubble:
+  extends: topTargetBubble
+  x: += 166
+  
+topRangeIcon:
+  extends: 
+   - topRangeBubble
+   - icon
+  y: -= 15
+  X: -= 15
+
+topRange:
+  extends: topRangeBubble
+  y: += 10
+  align: center
+  font: 'Garamond 7.5'
+  
+#duration
+topDurationBubble:
+  extends: topRangeBubble
+  x: += 167
+  
+topDurationIcon:
+  extends: 
+   - topDurationBubble
+   - icon
+  y: -= 15
+  X: -= 15
+
+topDuration:
+  extends: topDurationBubble
+  y: += 10
+  align: center
+  font: 'Garamond 7.5'
+  
+#result
+topResultBubble:
+  extends: topDurationBubble
+  x: += 167
+  
+topResultIcon:
+  extends: 
+   - topResultBubble
+   - icon
+  y: -= 15
+  X: += 15
+
+topResult:
+  extends: topResultBubble
+  y: += 10
+  align: center
+  font: 'Garamond 7.5'
+  
+
+# abilities
+
+  
+title:
+  height: 50
+  align: center
+  font: 'Garamond 10'
+
+variables:
+  height: 70
+  font: 'Garamond 7.5'
+  
+rules:
+  extends: widthSafeArea
+  height: 240
+  width: -= 40
+  font: 'Garamond 7.5'
+  
+topTitle:
+  extends: 
+   - title
+   - fromTopLeftSafeToMargin
+   - widthSafeArea
+  color: :black
+  y: += 70
+  align: center
+  width: -= 40
+  
+#topWeaponOrInfluence:
+#  extends:
+#   - topTarget
+#   - iconsWidthHeight
+#  y: += 60
+  
+topVariables:
+  extends:
+   - topTitle
+   - variables
+  y: += 60
+  color: :black
+  
+topRules:
+  extends: 
+   - topVariables
+   - rules
+  y: += 60
+  color: :black
+  
+## Bottom Ability Section
+
+# Bubbles
+  
+#target
+bottomTargetBubble:
+  extends: 
+  - lineTopOfBottomAbility
+  - bubble
+  y: += 20
+  x: += 20
+  
+bottomTargetIcon:
+  extends: 
+   - bottomTargetBubble
+   - icon
+  y: -= 15
+
+bottomTarget:
+  extends: bottomTargetBubble
+  y: += 10
+  align: center
+  font: 'Garamond 6'
+  
+#range
+bottomRangeBubble:
+  extends: bottomTargetBubble
+  x: += 166
+  
+bottomRangeIcon:
+  extends: 
+   - bottomRangeBubble
+   - icon
+  y: -= 15
+  X: -= 15
+
+bottomRange:
+  extends: bottomRangeBubble
+  y: += 10
+  align: center
+  font: 'Garamond 7.5'
+  
+#duration
+bottomDurationBubble:
+  extends: bottomRangeBubble
+  x: += 167
+  
+bottomDurationIcon:
+  extends: 
+   - bottomDurationBubble
+   - icon
+  y: -= 15
+  X: -= 15
+  
+bottomDuration:
+  extends: bottomDurationBubble
+  y: += 10
+  align: center
+  font: 'Garamond 6'
+
+#result
+bottomResultBubble:
+  extends: bottomDurationBubble
+  x: += 167
+  
+bottomResultIcon:
+  extends: 
+   - bottomResultBubble
+   - icon
+  y: -= 15
+  X: += 15
+
+bottomResult:
+  extends: bottomResultBubble
+  y: += 10
+  align: center
+  font: 'Garamond 7.5'
+
+
+# Abilities
+
+bottomTitle:
+  extends: 
+   - title 
+   - topOfBottomAbility
+   - fromLeftSafeToMargin
+   - widthSafeArea
+  color: :black
+  y: += 80
+  align: center
+  width: -= 40
+
+bottomWeaponOrInfluence:
+  extends:
+   - bottomTarget
+   - iconsWidthHeight
+  y: += 60
+   
+bottomVariables:
+  extends: 
+   - bottomTitle
+   - variables
+  y: += 60
+  color: :black
+
+bottomRules:
+  extends: 
+   - bottomVariables
+   - rules
+  y: += 60
+  color: :black
+  
+  
+
+  
+
+#doesn't ever change, the word "Passives"
+passivesTitle:
+  extends: 
+   - lineTopOfPassives
+  x: += 20
+  y: += 10
+  width: 150
+  height: 35
+  align: left
+  font: 'Garamond 7.5'
+
+#often `# health`, `# stats`, or both
+passivesBody:
+  extends: passivesTitle
+  x: += 75
+  width: 475
+  height: 60
+  align: center
+
+
+#line to break up the tier/card number
+verticalLine:
+  extends: 
+   - passivesBody
+  x: += 450
+  y: -= 10
+  width: 1.5
+  height: 50
+
+
+#text "Tier"
+typeOfCard:
+  extends: 
+   - passivesTitle
+  x: += 540
+  width: 100
+  height: 35
+  align: left
+  font: 'Garamond 7.5'
+
+
+#doesn't ever change, the word "Requirements
+requirementsTitle:
+  extends: 
+   - lineTopOfRequirements
+  x: += 20
+  y: += 10
+  width: 210
+  height: 35
+  align: left
+  font: 'Garamond 7.5'
+
+#We can have multiple stats, and which stat we have isn't following any consistent order
+#also, we have graphics we'd like to use for each stat type.
+#in order to marry icons with text, and not have a huge headache of buffer management, we hard code the different slots where requirements can go
+
+#depends on the card if this is present, and what value it is
+requirementsBody0:
+   x: 1
+   y: 1
+   width: 1
+   height: 1
+
+requirementsBody1:
+  extends: requirementsTitle
+  x: += 200
+  width: 280
+
+requirementsBody2:
+  extends: requirementsBody1
+  x: += 85
+  
+requirementsBody3:
+  extends: requirementsBody2
+  x: += 85
+  
+requirementsBody4:
+  extends: requirementsBody3
+  x: += 85
+  
+
+  
+#assuming there are # of stats, an icon is to be paired with it. this controls the width/height/etc.
+requirementsImage0:
+   x: 1
+   y: 1
+   width: 1
+   height: 1
+
+requirementsImage1:
+  extends: 
+   - requirementsBody1
+   - requirementsIconsWidthHeight
+  x: += 20
+   
+requirementsImage2:
+  extends: requirementsImage1
+  x: += 85
+   
+requirementsImage3:
+  extends: requirementsImage2
+  x: += 85
+   
+requirementsImage4:
+  extends: requirementsImage3
+  x: += 85
+  
+  
+#similar to the above, but for the side bar
+barImage0:
+   x: 1
+   y: 1
+   width: 1
+   height: 1
+
+barImage1:
+  extends: 
+   - fromTopLeftCutToSafe
+   - barIconsWidthHeight
+  x: -= 27
+  y: += 25
+  fill_color: '#fff'
+   
+barImage2:
+  extends: barImage1
+  y: += 85
+   
+barImage3:
+  extends: barImage2
+  y: += 85
+   
+barImage4:
+  extends: barImage3
+  y: += 85
+   
+
+
+cardNumber:
+  extends: 
+   - requirementsBody4
+  x: += 115
+  #align: right
+  font: 'Garamond 7.5'
+
+cardNumberCircle:
+  extends: 
+   - cardNumber
+  x: -= 15
+  #align: right
+  width: 54
+  height: 34
+  radius: 18
+## locations of graphics
+
+
+# icons have specific locations, this section defines what those are
+
+iconsWidthHeight:
+  width: 75
+  height: 75
+
+requirementsIconsWidthHeight:
+  width: 40
+  height: 40
+  
+barIconsWidthHeight:
+  width: 30
+  height: 40
+
+## back of card
+
+
+backOfCards:
+  extends: safe
+  fill_color: :raw_umber
+  #fill_color: '#444'
+
+diceBack:
+  x: 430
+  y: 380
+  width: 250
+  height: 250
+  angle: 2
+
+cardBack:
+  x: 550
+  y: 250
+  width: 250
+  height: 250
+  angle: 120
+  
+tokensBack:
+  x: 270
+  y: 460
+  width: 250
+  height: 250
+  
+#822,1122 are card width
+#start x and Y from the overall card safe area co-ord
+#want width of overall card
+#height is size of text... doesn't really matter unless it's too small
+#increase y until it's below the graphics (roughly 2/3 of overall height, which is 1050, so ~700)
+companyLogo:
+  extends: 
+   - fromTopLeftCutToSafe
+   - widthSafeArea
+  height: 80
+  y: += 650
+  align: center
+  font: 'Garamond Bold 20'
+  color: 'white'
+  
+backgroundImage:
+  extends: fromTopLeftCutToSafe
+  
